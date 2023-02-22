@@ -20,9 +20,12 @@ export default function SignInScreen({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorSignIn, setErrorSignIn] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
+    setIsLoading(true);
+    setErrorSignIn("");
     if (!email || !password) {
       setErrorSignIn("Please fill all fields");
     } else {
@@ -34,12 +37,16 @@ export default function SignInScreen({ setToken }) {
         );
         alert("Connexion successfull !");
         console.log(response.data);
+        if (response.data) {
+          setToken(response.data.token);
+        }
       } catch (error) {
         if (error.response.status === 401) {
           setErrorSignIn("Email or password is incorrect");
         }
       }
     }
+    setIsLoading(false);
   };
   return (
     <KeyboardAwareScrollView>
@@ -73,9 +80,13 @@ export default function SignInScreen({ setToken }) {
             <Text style={styles.errorSignInText}> </Text>
           )}
           <TouchableOpacity
-            style={styles.signInButton}
+            style={
+              !isLoading ? styles.signInButton : styles.signInButtonDisable
+            }
             onPress={() => {
-              handleSubmit();
+              if (!isLoading) {
+                handleSubmit();
+              }
             }}
           >
             <Text style={styles.signInButtonText}>Sign In</Text>
@@ -152,6 +163,13 @@ const styles = StyleSheet.create({
   signInButton: {
     borderWidth: 3,
     borderColor: "salmon",
+    paddingHorizontal: 50,
+    paddingVertical: 10,
+    borderRadius: 30,
+  },
+  signInButtonDisable: {
+    borderWidth: 3,
+    borderColor: "gray",
     paddingHorizontal: 50,
     paddingVertical: 10,
     borderRadius: 30,

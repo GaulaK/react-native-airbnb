@@ -8,10 +8,10 @@ import {
   StyleSheet,
   Dimensions,
   Image,
+  SafeAreaView,
 } from "react-native";
 import Constants from "expo-constants";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
 import axios from "axios";
 
 const windowHeight = Dimensions.get("window").height;
@@ -23,9 +23,11 @@ export default function SignUpScreen({ setToken }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorSignUp, setErrorSignUp] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     setErrorSignUp("");
     if (password !== confirmPassword) {
       setErrorSignUp("Passwords must be the same");
@@ -36,7 +38,7 @@ export default function SignUpScreen({ setToken }) {
       !password ||
       !confirmPassword
     ) {
-      console.log(email, username, description, password);
+      // console.log(email, username, description, password);
       setErrorSignUp("Please fill all fields");
     } else {
       try {
@@ -51,37 +53,25 @@ export default function SignUpScreen({ setToken }) {
           body
         );
         alert("Sign Up successful");
-        console(response.data);
+        console.log("data :", response.data);
+        if (response.data) {
+          setToken(response.data.token);
+        }
       } catch (error) {
-        if (error.response.status === 400) {
+        // console.log(error.response);
+        if (error.response?.status === 400) {
           setErrorSignUp("Email and/or Username already use");
-          console.log(error.response);
         } else {
-          console.log(error.response);
+          console.log("Mysterious error ?! :", error);
         }
       }
     }
-    // if (!email || !password) {
-    //   setErrorSignUp("Please fill all fields");
-    // } else {
-    //   try {
-    //     const body = { email: email, password: password };
-    //     const response = await axios.post(
-    //       "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/log_in",
-    //       body
-    //     );
-    //     alert("Connexion succesfull !");
-    //     console.log(response.data);
-    //   } catch (error) {
-    //     if (error.response.status === 401) {
-    //       setErrorSignUp("Email or password is incorrect");
-    //     }
-    //   }
-    // }
+    setIsLoading(false);
   };
+
   return (
     <KeyboardAwareScrollView>
-      <View style={styles.signupForm}>
+      <SafeAreaView style={styles.signupForm}>
         <View style={styles.topForm}>
           <Image
             style={styles.logo}
@@ -105,7 +95,6 @@ export default function SignUpScreen({ setToken }) {
           <TextInput
             multiline={true}
             numberOfLines={4}
-            textAlignVertical={"top"}
             style={styles.fieldMultiline}
             value={description}
             placeholder="Describe yourself in a few words..."
@@ -117,7 +106,7 @@ export default function SignUpScreen({ setToken }) {
             secureTextEntry={true}
             placeholder="password"
             onChangeText={(text) => setPassword(text)}
-          />
+          ></TextInput>
           <TextInput
             style={styles.field}
             value={confirmPassword}
@@ -135,7 +124,9 @@ export default function SignUpScreen({ setToken }) {
           <TouchableOpacity
             style={styles.signUpButton}
             onPress={() => {
-              handleSubmit();
+              if (!isLoading) {
+                handleSubmit();
+              }
             }}
           >
             <Text style={styles.signUpButtonText}>Sign Up</Text>
@@ -150,7 +141,7 @@ export default function SignUpScreen({ setToken }) {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </KeyboardAwareScrollView>
   );
 }
@@ -171,7 +162,7 @@ const styles = StyleSheet.create({
     height: windowHeight * (2.3 / 10),
     justifyContent: "center",
     alignItems: "center",
-    // backg(1*4)roundColor: "red",
+    // backgroundColor: "red",
   },
   fields: {
     width: "100%",
@@ -184,7 +175,7 @@ const styles = StyleSheet.create({
   bottomFrom: {
     width: "100%",
     height: windowHeight * (2.5 / 10),
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     // backgroundColor: "green",
   },
@@ -209,23 +200,36 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 5,
     fontSize: 15,
-    marginTop: 30,
+    marginBottom: 30,
+    // backgroundColor: "yellow",
   },
 
   fieldMultiline: {
+    textAlignVertical: "top",
     borderColor: "salmon",
     borderWidth: 2,
     width: "100%",
     paddingVertical: 5,
     paddingHorizontal: 10,
     fontSize: 15,
-    marginTop: 30,
+    marginBottom: 30,
+    marginTop: 15,
     height: 85,
   },
   // Bottom
   signUpButton: {
+    color: "yellow",
     borderWidth: 3,
     borderColor: "salmon",
+    paddingHorizontal: 50,
+    paddingVertical: 10,
+    borderRadius: 30,
+  },
+
+  signUpButtonDisable: {
+    color: "blue",
+    borderWidth: 3,
+    borderColor: "gray",
     paddingHorizontal: 50,
     paddingVertical: 10,
     borderRadius: 30,
