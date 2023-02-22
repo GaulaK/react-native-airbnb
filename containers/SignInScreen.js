@@ -17,8 +17,8 @@ import axios from "axios";
 const windowHeight = Dimensions.get("window").height;
 
 export default function SignInScreen({ setToken }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test@gaulak.fr");
+  const [password, setPassword] = useState('test&é"');
   const [errorSignIn, setErrorSignIn] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
@@ -35,7 +35,6 @@ export default function SignInScreen({ setToken }) {
           "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/log_in",
           body
         );
-        alert("Connexion successfull !");
         console.log(response.data);
         if (response.data) {
           setToken(response.data.token);

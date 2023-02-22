@@ -9,6 +9,7 @@ import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
+import RoomScreen from "./containers/RoomScreen";
 import SplashScreen from "./containers/SplashScreen";
 
 const Tab = createBottomTabNavigator();
@@ -68,7 +69,7 @@ export default function App() {
           </>
         ) : (
           // User is signed in ! 🎉
-          <Stack.Screen name="Tab" options={{ headerShown: false }}>
+          <Stack.Screen name="Tab" screenOptions={{ headerShown: false }}>
             {() => (
               <Tab.Navigator
                 screenOptions={{
@@ -90,13 +91,18 @@ export default function App() {
                     <Stack.Navigator>
                       <Stack.Screen
                         name="Home"
-                        options={{
-                          title: "My App",
-                          headerStyle: { backgroundColor: "red" },
-                          headerTitleStyle: { color: "white" },
-                        }}
+                        options={
+                          {
+                            // title: "My App",
+                            // headerStyle: { backgroundColor: "red" },
+                            // headerTitleStyle: { color: "white" },
+                          }
+                        }
                       >
                         {() => <HomeScreen />}
+                      </Stack.Screen>
+                      <Stack.Screen name="Room" options={{}}>
+                        {() => <RoomScreen />}
                       </Stack.Screen>
 
                       <Stack.Screen
