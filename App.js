@@ -11,6 +11,7 @@ import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import RoomScreen from "./containers/RoomScreen";
 import SplashScreen from "./containers/SplashScreen";
+import AroundMeScreen from "./containers/AroundMeScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -113,6 +114,33 @@ export default function App() {
                       >
                         {(props) => <ProfileScreen {...props} />}
                       </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="AroundMeTab"
+                  options={{
+                    tabBarLabel: "Around me",
+                    tabBarIcon: ({ color, size }) => (
+                      <Ionicons
+                        name={"ios-map-outline"}
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator screenOptions={{ headerShown: true }}>
+                      <Stack.Screen name="AroundMe" options={{}}>
+                        {(props) => <AroundMeScreen {...props} />}
+                      </Stack.Screen>
+
+                      <Stack.Screen
+                        name="Room"
+                        component={RoomScreen}
+                        options={{}}
+                      />
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>

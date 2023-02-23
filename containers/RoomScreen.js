@@ -13,9 +13,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Constants from "expo-constants";
+import Swiper from "react-native-swiper";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
+import MapView, { Marker } from "react-native-maps";
 
 const RoomScreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,25 +41,26 @@ const RoomScreen = ({ route }) => {
     fetchData();
   }, []);
 
-  console.log(data);
-  // console.log(data.photos[0].url);
-  // console.log(route.params);
-
   return isLoading ? (
     <View style={styles.loadingPage}>
       <ActivityIndicator size={"large"} color="salmon" />
     </View>
   ) : (
     <ScrollView style={styles.pageContainer}>
-      <View style={styles.imageContainer}>
-        <ImageBackground
-          source={{ uri: data.photos[0].url }}
-          style={styles.imageCard}
-          resizeMode="cover"
-        >
-          <Text style={styles.price}>{`${data.price} €`}</Text>
-        </ImageBackground>
-      </View>
+      <Swiper style={styles.wrapper} autoplay>
+        {data.photos.map((slide) => {
+          return (
+            <View style={styles.slide}>
+              <Image
+                source={{ uri: slide.url }}
+                style={{ height: "100%", width: "100%" }}
+              />
+            </View>
+          );
+        })}
+      </Swiper>
+      <Text style={styles.price}>{`${data.price} €`}</Text>
+
       <View style={styles.detailsContainer}>
         <View style={styles.roomCardText}>
           <Text numberOfLines={1} style={styles.roomTitle}>
@@ -154,6 +157,26 @@ const RoomScreen = ({ route }) => {
       <View style={styles.descriptionContainer}>
         <Text style={styles.description}>{data.description}</Text>
       </View>
+      <MapView
+        // La MapView doit obligatoirement avoir des dimensions
+        style={{ marginTop: "10%", width: "100%", height: 300 }}
+        initialRegion={{
+          latitude: 48.864716,
+          longitude: 2.349014,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
+        }}
+        showsUserLocation={true}
+      >
+        <Marker
+          coordinate={{
+            latitude: data.location[1],
+            longitude: data.location[0],
+          }}
+          title={data.title}
+          description={data.description}
+        />
+      </MapView>
     </ScrollView>
   );
 };
@@ -169,27 +192,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  imageContainer: {
-    width: "100%",
-    height: 250,
-    resizeMode: "contain",
-    justifyContent: "flex-end",
-    backgroundColor: "salmon",
-  },
-  imageCard: {
-    flex: 1,
-    justifyContent: "flex-end",
-    paddingBottom: "5%",
-  },
-  price: {
-    backgroundColor: "black",
-    color: "white",
-    fontSize: 20,
-    paddingVertical: "3%",
-    paddingHorizontal: "5%",
-    width: "30%",
-    textAlign: "center",
   },
 
   detailsContainer: {
@@ -235,5 +237,26 @@ const styles = StyleSheet.create({
 
   descriptionContainer: {
     paddingHorizontal: "5%",
+  },
+  wrapper: {
+    height: 250,
+    resizeMode: "contain",
+    justifyContent: "flex-end",
+    backgroundColor: "salmon",
+  },
+  slide: {
+    height: 300,
+  },
+
+  price: {
+    position: "absolute",
+    backgroundColor: "black",
+    color: "white",
+    fontSize: 20,
+    paddingVertical: "3%",
+    paddingHorizontal: "5%",
+    width: "20%",
+    textAlign: "center",
+    top: "20%",
   },
 });
