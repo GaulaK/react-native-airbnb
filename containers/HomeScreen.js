@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/core";
 import {
   Button,
   Text,
@@ -21,10 +20,11 @@ import { FontAwesome } from "@expo/vector-icons";
 const image = { uri: "https://reactjs.org/logo-og.png" };
 const windowHeight = Dimensions.get("window").height;
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation, route }) {
+  // console.log(route);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place

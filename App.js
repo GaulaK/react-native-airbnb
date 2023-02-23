@@ -99,10 +99,10 @@ export default function App() {
                           }
                         }
                       >
-                        {() => <HomeScreen />}
+                        {(props) => <HomeScreen {...props} />}
                       </Stack.Screen>
                       <Stack.Screen name="Room" options={{}}>
-                        {() => <RoomScreen />}
+                        {(props) => <RoomScreen {...props} />}
                       </Stack.Screen>
 
                       <Stack.Screen
@@ -111,7 +111,7 @@ export default function App() {
                           title: "User Profile",
                         }}
                       >
-                        {() => <ProfileScreen />}
+                        {(props) => <ProfileScreen {...props} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
