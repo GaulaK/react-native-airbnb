@@ -50,7 +50,7 @@ const RoomScreen = ({ route }) => {
       <Swiper style={styles.wrapper} autoplay>
         {data.photos.map((slide) => {
           return (
-            <View style={styles.slide}>
+            <View style={styles.slide} key={slide.picture_id}>
               <Image
                 source={{ uri: slide.url }}
                 style={{ height: "100%", width: "100%" }}
